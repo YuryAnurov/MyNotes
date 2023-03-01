@@ -1,0 +1,28 @@
+{% extends "mynotes/layout.html" %}
+
+{% block nav %}
+
+{% if sections %}
+{% for section in sections %}
+<li class="nav-item">
+    <a class="nav-link" href="{%url 'sectionnotes' section.id %}">{{section}}</a>
+</li>
+{% endfor %}
+{% endif %}
+
+{% endblock %}
+
+
+{% block body %}
+
+<div class="dvn">
+    <h4 style="text-align: center;">Section - is a place for notes of one topic. To make additional sections press + on navigation panel</h4>
+    <form action="{% url 'newsection' %}" method="post">
+        {% csrf_token %}
+        <input name="section" type="text" placeholder="input newsection name here" style="width: 85vw;" id="newsect">
+        <input type = "submit" value="Add section" id="submit">
+    </form>
+</div>
+
+
+{% endblock %}

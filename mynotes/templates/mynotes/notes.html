@@ -1,0 +1,75 @@
+<div class="dv">
+    <table>
+    <tr>
+        <!-- Checking amount of categories to define width of note -->
+        {% if categories|length > 6 %}
+        <td class="roditel" style="width: 29vw;">
+            <div class="cont">
+                <span class="texta">{{note.content}}</span>
+                <a class="urla" href={{note.url}}>{{note.url}}</a>
+            </div>
+        </td>
+        <td style="border-right: 0.6vw solid transparent;"></td>
+        <td>
+            <div style="font-size: x-small; width: 14vw; height: 6vw; overflow: auto; caret-color: transparent;">
+                {% for category in categories %}
+                    <div style="float:left;">
+                    {% if category in note.category.all %}
+                    <input  class="mycl check" id={{category.id}} value={{category.category}} type="checkbox" checked>{{category.category}}&nbsp;&nbsp;
+                    {% else %}
+                    <input  class="mycl check" id={{category.id}} value={{category.category}} type="checkbox">{{category.category}}&nbsp;&nbsp;
+                    <!-- <label  for= category.id ></label> по клику выбирался чек другого ноута, убрал-->
+                    {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </td>
+        {% elif categories %}
+        <td class="roditel" style="width: 35vw;">
+            <div class="cont" style="width: 34vw;">
+                <span class="texta">{{note.content}}</span>
+                <a class="urla" href={{note.url}}>{{note.url}}</a>
+            </div>
+        </td>
+        <td style="border-right: 0.6vw solid transparent;"></td>
+        <td>
+            <div style="font-size: x-small; width: 8vw; height: 6vw;">
+                {% for category in categories %}
+                <div style="float:left;">
+                    {% if category in note.category.all %}
+                    <input  class="mycl check" id={{category.id}} value={{category.category}} type="checkbox" checked>{{category.category}}&nbsp;&nbsp;
+                    {% else %}
+                    <input  class="mycl check" id={{category.id}} value={{category.category}} type="checkbox">{{category.category}}&nbsp;&nbsp;
+                    <!-- <label  for= category.id ></label> по клику выбирался чек другого ноута, убрал-->
+                    {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </td>
+        {% else %}
+        <td class="roditel" style="width: 43.6vw;">
+            <div class="cont" style="width: 42.6vw;">
+                <span class="texta">{{note.content}}</span>
+                <a class="urla" href={{note.url}}>{{note.url}}</a>
+            </div>
+        </td>
+        {% endif %}
+        <td>
+            <ul style="list-style: none; margin-left: -45px; margin-bottom: -2px;">
+                <li style="margin-bottom: 2px; margin-top:1px;">
+                    <button class="bmdl pencil btn btn-sm btn-outline-secondary"><i class="mycl bi bi-pencil"></i></button>
+                </li>
+                <li>
+                    <button class="bmdl trashbin btn btn-sm btn-outline-secondary"><i class="mycl bi bi-trash3"></i></button>
+                </li>
+                <li style="font-size: xx-small; margin-left: -4px; white-space: nowrap;">{{ note.crshown |date:"d/m/y" }}<span class="noteid">{{note.id}}</span></li>
+            </ul>
+        </td>
+    </tr>
+    </table>
+</div>
+
+
+<!--<i class="mycl bi bi-pencil"></i>   
+<i class="bi bi-clipboard-check"></i>
+-->

@@ -1,0 +1,98 @@
+{% extends "mynotes/layout.html" %}
+
+{% block nav %}
+
+{% if sections %}
+{% for section in sections %}
+<li class="nav-item">
+    <a class="nav-link" href="{%url 'sectionnotes' section.id %}">{{section}}</a>
+</li>
+{% endfor %}
+{% endif %}
+
+{% endblock %}
+
+
+{% block body %}
+
+<!--Sections-->
+<div class="dv" style="width: 96vw; text-align: center; ">
+<h3>Archived sections:</h3>    
+</div>
+
+<div style="overflow: auto; margin-top: -10px;">
+    {% for section in archived %}
+    <div class="dv" style="width: 22vw; padding: 10px; float: left;">
+        <table>
+        <tr>
+            <td style="width: 15vw;">
+                <div class="cont" style="width: 14vw; overflow-wrap:break-word;">
+                    <span class="secname">{{section.section}}</span>
+                </div>
+            </td>
+            <td style="border-right: 0.6vw solid transparent;"></td>
+            <td>
+                <ul style="list-style: none; margin-left: -45px; margin-bottom: -1px;">
+                    <li style="margin-bottom: 2px; margin-top:1px;">
+                        <button class="rename bs btn btn-sm btn-outline-secondary"  style="width:5vw" value={{section.id}} >Rename</button>
+                    </li>
+                    <li>
+                        <form action="{% url 'sectionnotes' section.id %}" method="get">
+                            <input class="bs btn btn-sm btn-outline-secondary" type = "submit" value="Restore" style="width:5vw">
+                        </form>
+                    </li>
+<!--                    <li style="font-size: xx-small; margin-left: -4px; white-space: nowrap;">Archived</li>-->
+                </ul>
+            </td>
+        </tr>
+        </table>
+    </div>
+    {% endfor %}
+</div>
+<br>
+
+<!--Archived Section Notes-->
+<div class="dv" style="width: 96vw; text-align: center; ">
+<h3>Archived Section notes:</h3>    
+</div>
+
+<div style="display: flex; flex-wrap: wrap; margin-top: -10px;">
+
+    <div>
+    {% for note in not1 %}
+    {% include "mynotes/arcnotes.html" %}
+    {% endfor %}
+    </div>
+
+    <div>
+    {% for note in not2 %}
+    {% include "mynotes/arcnotes.html" %}
+    {% endfor %}
+    </div>
+
+
+</div>
+
+
+<!--Deleted Notes-->
+<div class="dv" style="width: 96vw; text-align: center; ">
+    <h3>Deleted notes:</h3>    
+    </div>
+    
+    <div style="display: flex; flex-wrap: wrap; margin-top: -10px;">
+    
+        <div>
+        {% for note in del1 %}
+        {% include "mynotes/arcnotes.html" %}
+        {% endfor %}
+        </div>
+    
+        <div>
+        {% for note in del2 %}
+        {% include "mynotes/arcnotes.html" %}
+        {% endfor %}
+        </div>
+    
+    
+    </div>
+{% endblock %}

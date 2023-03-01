@@ -1,0 +1,24 @@
+<div class="dv">
+    <table>
+    <tr>
+        <td style="width: 40vw;">
+            <div class="cont" style="width: 37vw;">
+                <span>{{note.content}}</span>
+                <span><a href={{note.url}}>{{note.url}}</a></span>
+            </div>
+        </td>
+        <td style="border-right: 0.6vw solid transparent;"></td>
+        <td>
+            <ul style="list-style: none; margin-left: -55px; margin-bottom: -2px; width: 11vw;">
+                {% if note.status == "deleted" %}
+                <li style="font-size: xx-small;">RestoreOption: NO </li>
+                {% else %}
+                <li style="font-size: xx-small;">RestoreOption: section</li>
+                {% endif %}
+                <li style="font-size: xx-small; overflow-wrap:break-word;">Section:_{{note.section}}</li>
+                <li style="font-size: xx-small; white-space: nowrap;">Noted: {{ note.crshown |date:"d/m/y" }}<span class="noteid">{{note.id}}</span></li>
+            </ul>
+        </td>
+    </tr>
+    </table>
+</div>

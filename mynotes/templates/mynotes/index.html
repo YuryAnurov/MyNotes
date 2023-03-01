@@ -1,0 +1,130 @@
+{% extends "mynotes/layout.html" %}
+
+<!-- Sections for Navigation Panel -->
+{% block nav %}
+
+    {% if sections %}
+    {% for section in sections %}
+    <li class="nav-item">
+        <a class="nav-link" href="{%url 'sectionnotes' section.id %}">{{section}}</a>
+    </li>
+    {% endfor %}
+
+    {% endif %}
+
+{% endblock %}
+
+
+{% block body %}
+
+{% if not sections and user.is_authenticated %}
+<div>
+<h2 style="margin-left: 20px;">To make notes input a section name below:</h2>
+<div class="dvn">
+    <h4 style="text-align: center;">Section - is a place for notes of one topic. To make additional sections press <i class="bi bi-plus-circle"></i> on navigation panel</h4>
+    <form action="{% url 'newsection' %}" method="post">
+        {% csrf_token %}
+        <input name="section" type="text" placeholder="input newsection name here" style="width: 85vw; ">
+        <input type = "submit" value="Add section">
+    </form>
+</div>
+</div>
+{% endif %}
+
+{% if section %}
+<!-- New note-->
+<div class="dvn">
+    <form action="{% url 'note' section.id %}" method="post">
+    <table>
+    <tr>
+        <td>
+            <input class="bt btn btn-sm btn-outline-secondary" type = "submit" value="Place Note">
+        </td>
+        <td style="border-right: 0.6vw solid transparent;"></td>
+        <td>
+                {% csrf_token %}
+                <textarea name="content" placeholder="input your note here" rows="1" style="width: 89vw"></textarea>
+                <br/>
+                <input type = "url" name="url" placeholder="url if needed" style="width: 89vw;">
+        </td>
+    </tr>
+    </table>
+    </form>
+</div>
+
+<!-- Section categories-->
+<div class="dvn">
+<table style="font-size: small; caret-color: transparent;">
+    <tr> 
+        <!-- Radio-->
+        <td>
+            <form>
+                <input class="mycl radio" id="allnotes" type="radio" name="question" value="yes" checked>
+                <label for="allnotes">all notes</label>
+                <input class="mycl radio" id="chosen" type="radio" name="question" value="no">
+                <label for="chosen">chosen cat-s</label>
+              </form>
+        </td>
+        <td style="border-right: 0.6vw solid transparent;"></td>
+        <td style="border-right: 1px solid;"></td>        
+        <td style="border-right: 1px solid;"></td>        
+        <!-- Checkboxes-->                
+        {% for category in categories %}
+        <td style="border-right: 0.6vw solid transparent;"></td>
+        <td>
+            <form>
+                <input  class="mycl chbox" id={{category.category}} type="checkbox" value={{category.id}}>
+                <label  for={{category.category}}>{{category.category}}</label>
+                <i class="edcat mycl bi bi-pencil"></i> <i class="delcat mycl bi bi-trash3"></i>
+            </form>
+        </td>
+        <td style="border-right: 0.6vw solid transparent;"></td>    
+        <td style="border-right: 1px solid;"></td>           
+        {% endfor %}        
+        <!-- Add category-->
+        <td style="border-right: 1px solid;"></td>        
+        <td style="border-right: 0.6vw solid transparent;"></td>
+        <form action="{% url 'category' section.id %}" method="post">
+        <td style="font-size: x-small; caret-color: auto;">
+            {% csrf_token %}
+            <input class="bs" name="category" type="text" placeholder="input new category">
+        </td>
+        <td>
+            <input class="bs btn btn-sm btn-outline-secondary" type = "submit" value="+" style="width: 2vw;">
+        </td>
+        </form>
+        <td style="border-right: 0.6vw solid transparent;"></td>        
+        <td style="border-right: 1px solid;"></td>        
+        <td style="border-right: 1px solid;"></td>     
+        <td style="border-right: 0.6vw solid transparent;"></td>
+        <!-- Archive section-->        
+        <td>
+        <form action="{% url 'archive' section.id %}" method="get">
+        <input class="btn btn-sm btn-outline-secondary" type = "submit" value="Archive">
+        </form>
+        </td>
+    </tr>
+</table>
+</div>
+{% endif %}
+
+
+<!-- Section notes-->
+<div id='notesdiv' style="display: flex; flex-wrap: wrap; margin-top: -10px;">
+
+    <div>
+    {% for note in not1 %}
+    {% include "mynotes/notes.html" %}
+    {% endfor %}
+    </div>
+
+    <div>
+    {% for note in not2 %}
+    {% include "mynotes/notes.html" %}
+    {% endfor %}
+    </div>
+
+</div>
+
+
+{% endblock %}
