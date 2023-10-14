@@ -3,11 +3,10 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-#from django.core.paginator import Paginator
 from django.http import JsonResponse
-import datetime, json
-#from django.contrib.auth.decorators import login_required
-#from django.views.decorators.csrf import csrf_exempt
+import datetime
+import json
+
 
 from .models import User, Section, Category, Note
 
@@ -20,46 +19,40 @@ def note(request, section_id):
         new_note.url = request.POST.get('url')
         new_note.created = datetime.datetime.now()
         new_note.crshown = new_note.created.date()
-        new_note.section = Section.objects.get(pk = section_id)
+        new_note.section = Section.objects.get(pk=section_id)
         new_note.save()
         return HttpResponseRedirect(reverse("sectionnotes", args=(section_id,)))
-    
+
 
 def category(request, section_id):
     if request.method == "POST":
         new_cat = Category()
         new_cat.author = request.user
         new_cat.category = request.POST.get('category')
-        new_cat.section = Section.objects.get(pk = section_id)
+        new_cat.section = Section.objects.get(pk=section_id)
         new_cat.save()
         return HttpResponseRedirect(reverse("sectionnotes", args=(section_id,)))
 
 
 def addsection(request):
     sections = Section.objects.filter(author=request.user, status='active')
-    return render(request, "mynotes/addsection.html", {"sections":sections})
+    return render(request, "mynotes/addsection.html", {"sections": sections})
 
 
 def rename(request, section_id):
-
-    # Query for requested note
     try:
         section = Section.objects.get(pk=section_id)
     except Section.DoesNotExist:
         return JsonResponse({"error": "Section not found."}, status=404)
 
-    # Rename section
     if request.method == "PUT":
         data = json.loads(request.body)
         section.section = data["edtext"]
         section.save()
-        return HttpResponse(status=204) #обязательно нужен return, без него (хоть с пустым return, хоть вообще без return - ошибка 500, но работает
+        return HttpResponse(status=204)
 
-    # Update must be via PUT
     else:
-        return JsonResponse({
-            "error": "PUT request required."
-        }, status=400)
+        return JsonResponse({"error": "PUT request required."}, status=400)
 
 
 def newsection(request):
@@ -69,64 +62,48 @@ def newsection(request):
         new_section.section = request.POST.get('section')
         new_section.author = request.user
         new_section.save()
-        return render(request, "mynotes/index.html", {"section": new_section, "sections":sections})
-    
+        return render(request, "mynotes/index.html", {"section": new_section, "sections": sections})
+
 
 def edit(request, note_id):
-
-    # Query for requested note
     try:
         ednote = Note.objects.get(pk=note_id)
     except Note.DoesNotExist:
         return JsonResponse({"error": "Note not found."}, status=404)
 
-    # Update note
     if request.method == "PUT":
         data = json.loads(request.body)
         ednote.content = data["edtext"]
         ednote.url = data["edurl"]
         ednote.save()
-        return HttpResponse(status=204) #обязательно нужен return, без него (хоть с пустым return, хоть вообще без return - ошибка 500, но работает
+        return HttpResponse(status=204)
 
-    # Update must be via PUT
     else:
-        return JsonResponse({
-            "error": "PUT request required."
-        }, status=400)
-
+        return JsonResponse({"error": "PUT request required."}, status=400)
 
 
 def edcat(request, cat_id):
-
-    # Query for requested note
     try:
         edcat = Category.objects.get(pk=cat_id)
     except Note.DoesNotExist:
         return JsonResponse({"error": "Note not found."}, status=404)
 
-    # Update note
     if request.method == "PUT":
         data = json.loads(request.body)
         edcat.category = data["edtext"]
         edcat.save()
-        return HttpResponse(status=204) #обязательно нужен return, без него (хоть с пустым return, хоть вообще без return - ошибка 500, но работает
+        return HttpResponse(status=204)
 
-    # Update must be via PUT
     else:
-        return JsonResponse({
-            "error": "PUT request required."
-        }, status=400)
+        return JsonResponse({"error": "PUT request required."}, status=400)
 
 
 def pick(request, note_id):
-
-    # Query for requested note
     try:
         ednote = Note.objects.get(pk=note_id)
     except Note.DoesNotExist:
         return JsonResponse({"error": "Note not found."}, status=404)
 
-    # Update note
     if request.method == "PUT":
         data = json.loads(request.body)
         category = Category.objects.get(pk=int(data['category']))
@@ -134,71 +111,59 @@ def pick(request, note_id):
             ednote.category.remove(category)
         else:
             ednote.category.add(category)
-        return HttpResponse(status=204) #обязательно нужен return, без него (хоть с пустым return, хоть вообще без return - ошибка 500, но работает
+        return HttpResponse(status=204)
 
-    # Update must be via PUT
     else:
-        return JsonResponse({
-            "error": "PUT request required."
-        }, status=400)
+        return JsonResponse({"error": "PUT request required."}, status=400)
 
 
 def delete(request, note_id):
-
-    # Query for requested note
     try:
         ednote = Note.objects.get(pk=note_id)
     except Note.DoesNotExist:
         return JsonResponse({"error": "Note not found."}, status=404)
 
-    # Update note
     if request.method == "PUT":
         data = json.loads(request.body)
         ednote.status = data["status"]
         ednote.save()
-        return HttpResponse(status=204) #обязательно нужен return, без него (хоть с пустым return, хоть вообще без return - ошибка 500, но работает
+        return HttpResponse(status=204)
 
-    # Update must be via PUT
     else:
-        return JsonResponse({
-            "error": "PUT request required."
-        }, status=400)
+        return JsonResponse({"error": "PUT request required."}, status=400)
 
 
 def delcat(request, cat_id):
-    # Query for requested note
     try:
         todel = Category.objects.get(pk=cat_id)
     except Category.DoesNotExist:
         return JsonResponse({"error": "Note not found."}, status=404)
 
-    # Update note
     if request.method == "PUT":
         todel.delete()
-        return HttpResponse(status=204) #обязательно нужен return, без него (хоть с пустым return, хоть вообще без return - ошибка 500, но работает
+        return HttpResponse(status=204)
 
-    # Update must be via PUT
     else:
-        return JsonResponse({
-            "error": "PUT request required."
-        }, status=400)
+        return JsonResponse({"error": "PUT request required."}, status=400)
 
 
 def sectionnotes(request, section_id):
-    section = Section.objects.get(pk = section_id)
+    section = Section.objects.get(pk=section_id)
     if section.status == 'archived':
         section.status = 'active'
         section.save()
     sections = Section.objects.filter(author=request.user, status='active')
-    categories = Category.objects.filter(section = section)
-    notes = Note.objects.filter(section=section, status='active').order_by('created').reverse() #скобочки важны  после reverse, д.б метод, вот в {html}  без них
+    categories = Category.objects.filter(section=section)
+    notes = Note.objects.filter(section=section, status='active').order_by('created').reverse()
     not1 = notes[0::2]
     not2 = notes[1::2]
-    return render(request, "mynotes/index.html", {"section": section, "categories":categories, "sections":sections, "not1": not1, "not2": not2})
+    return render(request, "mynotes/index.html", {
+        "section": section, "categories": categories, "sections": sections, "not1": not1, "not2": not2
+        })
 
 
 def archive(request, section_id):
-    section = Section.objects.get(pk = section_id)
+    section = Section.objects.get(pk=section_id)
     section.status = 'archived'
     section.save()
     return HttpResponseRedirect(reverse("index"))
@@ -207,23 +172,29 @@ def archive(request, section_id):
 def archived(request):
     sections = Section.objects.filter(author=request.user, status='active')
     archived = Section.objects.filter(author=request.user, status='archived')
-    notes = Note.objects.filter(author=request.user, section__in=archived, status='active').order_by('created').reverse() #скобочки важны  после reverse, д.б метод, вот в {html}  без них
+    notes = Note.objects.filter(
+        author=request.user, section__in=archived, status='active'
+        ).order_by('created').reverse()
     not1 = notes[0::2]
     not2 = notes[1::2]
-    deleted = Note.objects.filter(author=request.user, status='deleted').order_by('created').reverse() #скобочки важны  после reverse, д.б метод, вот в {html}  без них
+    deleted = Note.objects.filter(author=request.user, status='deleted').order_by('created').reverse()
     del1 = deleted[0::2]
     del2 = deleted[1::2]
-    return render(request, "mynotes/archived.html", {"sections":sections, "archived":archived, "not1": not1, "not2": not2, "del1": del1, "del2": del2})
+    return render(request, "mynotes/archived.html", {
+        "sections": sections, "archived": archived, "not1": not1, "not2": not2, "del1": del1, "del2": del2
+        })
 
 
 def index(request):
     if request.user.is_authenticated:
         sections = Section.objects.filter(author=request.user, status='active')
-        notes = Note.objects.filter(author=request.user, section__in=sections, status='active').order_by('created').reverse() #скобочки важны  после reverse, д.б метод, вот в {html}  без них
+        notes = Note.objects.filter(
+            author=request.user, section__in=sections, status='active'
+            ).order_by('created').reverse()
         not1 = notes[0::2]
         not2 = notes[1::2]
-        return render(request, "mynotes/index.html", {"sections":sections, "not1": not1, "not2": not2})
-    return render(request, "mynotes/index.html") # через path "" к индексу обращались неавторизованные пользователи, что вызывало ошибку
+        return render(request, "mynotes/index.html", {"sections": sections, "not1": not1, "not2": not2})
+    return render(request, "mynotes/index.html")
 
 
 def login_view(request):
@@ -239,9 +210,7 @@ def login_view(request):
             login(request, user)
             return HttpResponseRedirect(reverse("index"))
         else:
-            return render(request, "mynotes/login.html", {
-                "message": "Invalid username and/or password."
-            })
+            return render(request, "mynotes/login.html", {"message": "Invalid username and/or password."})
     else:
         return render(request, "mynotes/login.html")
 
