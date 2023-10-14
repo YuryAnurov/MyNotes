@@ -21,14 +21,13 @@ https://youtu.be/hoqzkr8bLMc
 
 How to run application: 
 - Download the distribution code from GIT 
-- In your terminal, cd into the YuryAnurov directory. 
+- In your terminal, cd into the MyNotes directory. 
 - install python and django if not installed
-- run python manage.py makemigrations mynotes 
-- run python manage.py migrate 
-- run python manage.py runserver 
+- run in your terminal: python manage.py runserver
+- you can log in as Frodo with password 12 or register as a new user
 
 
-Every file content: 
+Every file content at static and templates folders: 
 - js.js - all javascript code 
 - styles.css - css 
 - favicon.ico - project icon 

@@ -25,8 +25,8 @@ SECRET_KEY = 'django-insecure-^0p6ppj1b8xi#1=8r8thw8vlafxa)v)%%1l#!2xx@-0!i$b093
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-#ALLOWED_HOSTS = ['192.168.0.10'] # for test on mobile
-ALLOWED_HOSTS = [] #default
+# ALLOWED_HOSTS = ['192.168.0.10'] # for test on mobile
+ALLOWED_HOSTS = []  # default
 
 
 # Application definition
@@ -112,7 +112,7 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
-#USE_L10N = True #data formats
+# USE_L10N = True #data formats
 
 USE_TZ = True
 
