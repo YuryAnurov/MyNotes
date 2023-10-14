@@ -28,7 +28,7 @@ How to run application:
 - run python manage.py runserver 
 
 
-Every file content: 
+Every file content at static and templates folders: 
 - js.js - all javascript code 
 - styles.css - css 
 - favicon.ico - project icon 
